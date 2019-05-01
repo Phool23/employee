@@ -2,16 +2,39 @@
 function __autoload($class){
   require_once "classes/$class.php";
 }
+if(isset($_GET['id'])){
+  $uid = $_GET['id'];
+
+  $employee = new Employee();
+  $result = $employee->selectOne($uid);
+}
+
+if(isset($_POST['submit'])){
+ $name =  $_POST['name'];
+ $city =  $_POST['city'];
+ $designation =  $_POST['designation'];
+
+ $fields =[
+  'name'=>$name,
+  'city'=>$city,
+  'designation'=>$designation];
+
+  $id = $_POST['id'];
+
+  $employee = new Employee();
+
+  $employee->update($fields,$id);
+}
+ 
  ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Employees</title>
+	<title>All Employees</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-	<!Nav bar>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="#">Navbar</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,40 +74,22 @@ function __autoload($class){
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="jumbotron">
-				<h4 class="mb-4"> All Employess</h4>
-				<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Name</th>
-      <th scope="col">City</th>
-      <th scope="col">Designation</th>
-      <th scope="col">Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <?php
-     $employee = new Employee();
-     $rows = $employee->select();
-     foreach ($rows as $row){
-      ?>
-        <tr>
-      <th scope="row"><?php echo $row['id']; ?></th>
-      <td><?php echo $row['name'];?></td>
-      <td><?php echo $row['city'];?></td>
-      <td><?php echo $row['designation'];?></td>
-      <td><a class="btn btn-sm btn-primary" href="edit.php?id=<?php echo $row['id'];?>">Edit</a>&nbsp;
-      <a class="btn btn-sm btn-danger"href="">Delete</a></td>
-    </tr>
-   </tbody>
-   <?php
-     }
-    ?>
-  
-  </tbody>
-</table>
-		</div>
-	</div>
-</div>
+				<h4 class="mb-4"> Edit Employee</h4>
+				<form action="" method="post">
+      <input type="hidden" name="id" value="<?php echo $result['id'] ;?>">
+     <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" name="name" aria-describedby="emailHelp" placeholder="Enter name" value="<?php echo $result['name']; ?>">
+     </div>
+  <div class="form-group">
+    <label for="city">City</label>
+    <input type="text" class="form-control" name="city" placeholder="Enter your City" value="<?php echo $result['city']; ?>">
+  </div>
+   <div class="form-group">
+    <label for="designation">Designation</label>
+    <input type="text" class="form-control" name="designation" placeholder="Enter your Designation" value="<?php echo $result['designation']; ?>">
+  </div>
+  <input type="submit" name="submit" class="btn btn-primary">
+</form>
 </body>
 </html>
